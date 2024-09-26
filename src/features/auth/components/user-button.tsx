@@ -20,7 +20,11 @@ export const UserButton = () => {
   const { signOut } = useAuthActions();
 
   const handleSignOut = () => {
-    signOut().then(() => router.push('/auth'));
+    signOut()
+      .then(() => {
+        router.push('/auth');
+      })
+      .catch(() => router.push('/auth'));
   };
 
   if (isLoading) {

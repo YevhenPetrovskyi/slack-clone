@@ -22,7 +22,8 @@ export const create = mutation({
     const userId = await getAuthUserId(ctx);
 
     if (!userId) {
-      throw new Error('Unauthorized');
+      console.log('User not authenticated');
+      return null;
     }
 
     const joinCode = generateCode();
@@ -81,7 +82,8 @@ export const getById = query({
     const useId = await getAuthUserId(ctx);
 
     if (!useId) {
-      throw new Error('Unauthorized');
+      console.log('User not authenticated');
+      return null;
     }
 
     const member = await ctx.db
