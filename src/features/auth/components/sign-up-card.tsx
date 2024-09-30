@@ -47,7 +47,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
     signIn('password', { name, email, password, flow: 'signUp' })
       .then(() => {
-        router.push('/');
+        router.replace('/');
       })
       .catch(() => {
         setError('Something went wrong');

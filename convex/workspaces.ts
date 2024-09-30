@@ -100,3 +100,75 @@ export const getById = query({
     return await ctx.db.get(args.id);
   },
 });
+
+export const update = mutation({
+  args: {
+    id: v.id('workspaces'),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const useId = await getAuthUserId(ctx);
+
+    if (!useId) {
+      console.log('User not authenticated');
+      return null;
+    }
+
+    const member = await ctx.db
+      .query('members')
+      .withIndex('by_workspace_id_user_id', (q) =>
+        q.eq('workspaceId', args.id).eq('userId', useId)
+      )
+      .unique();
+
+    if (!member || member.role !== 'admin') {
+      console.log('User not authorized');
+      return null;
+    }
+
+    await ctx.db.patch(args.id, { name: args.name });
+
+    return args.id;
+  },
+});
+
+export const remove = mutation({
+  args: {
+    id: v.id('workspaces'),
+  },
+  handler: async (ctx, args) => {
+    const useId = await getAuthUserId(ctx);
+
+    if (!useId) {
+      console.log('User not authenticated');
+      return null;
+    }
+
+    const member = await ctx.db
+      .query('members')
+      .withIndex('by_workspace_id_user_id', (q) =>
+        q.eq('workspaceId', args.id).eq('userId', useId)
+      )
+      .unique();
+
+    if (!member || member.role !== 'admin') {
+      console.log('User not authorized');
+      return null;
+    }
+
+    const [members] = await Promise.all([
+      ctx.db
+        .query('members')
+        .withIndex('by_workspace_id', (q) => q.eq('workspaceId', args.id))
+        .collect(),
+    ]);
+
+    for (const member of members) {
+      await ctx.db.delete(member._id);
+    }
+
+    await ctx.db.delete(args.id);
+
+    return args.id;
+  },
+});

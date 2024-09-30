@@ -40,7 +40,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
 
     signIn('password', { email, password, flow: 'signIn' })
       .then(() => {
-        router.push('/');
+        router.replace('/');
       })
       .catch(() => {
         setError('Invalid email or password');
