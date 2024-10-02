@@ -44,7 +44,7 @@ export const create = mutation({
 
     if (!userId) {
       console.log('User not authenticated');
-      return null;
+      throw new Error('User not authenticated');
     }
 
     const member = await ctx.db
@@ -56,7 +56,7 @@ export const create = mutation({
 
     if (!member || member.role !== 'admin') {
       console.log('User not authorized');
-      return null;
+      throw new Error('User not authorized');
     }
 
     const parsedName = args.name.replace(/\s+/g, '-').toLocaleLowerCase();
