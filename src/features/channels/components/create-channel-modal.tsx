@@ -42,7 +42,7 @@ export const CreateChannelModal = () => {
       {
         onSuccess: (id) => {
           toast.success('Channel created');
-          router.push(`/workspace/${workspaceId}/channels/${id}`);
+          router.replace(`/workspace/${workspaceId}/channel/${id}`);
           handleClose();
         },
 
