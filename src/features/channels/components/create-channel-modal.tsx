@@ -63,7 +63,7 @@ export const CreateChannelModal = () => {
             placeholder="e.g. plan-budget"
           />
           <div className="flex justify-end">
-            <Button disabled={false}></Button>
+            <Button disabled={false}>Create</Button>
           </div>
         </form>
       </DialogContent>
