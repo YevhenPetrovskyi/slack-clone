@@ -11,6 +11,53 @@ const generateCode = () => {
   return code;
 };
 
+export const join = mutation({
+  args: {
+    joinCode: v.string(),
+    workspaceId: v.id('workspaces'),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      console.log('User not authenticated');
+      throw new Error('User not authenticated');
+    }
+
+    const workspace = await ctx.db.get(args.workspaceId);
+
+    if (!workspace) {
+      console.log('Workspace not found');
+      throw new Error('Workspace not found');
+    }
+
+    if (workspace.joinCode !== args.joinCode.toLocaleLowerCase()) {
+      console.log('Invalid join code');
+      throw new Error('Invalid join code');
+    }
+
+    const existingMember = await ctx.db
+      .query('members')
+      .withIndex('by_workspace_id_user_id', (q) =>
+        q.eq('workspaceId', args.workspaceId).eq('userId', userId)
+      )
+      .unique();
+
+    if (existingMember) {
+      console.log('User already a member');
+      throw new Error('Already a member of this workspace');
+    }
+
+    await ctx.db.insert('members', {
+      userId,
+      workspaceId: workspace._id,
+      role: 'member',
+    });
+
+    return workspace._id;
+  },
+});
+
 export const newJoinCode = mutation({
   args: { workspaceId: v.id('workspaces') },
   handler: async (ctx, args) => {
@@ -18,7 +65,7 @@ export const newJoinCode = mutation({
 
     if (!userId) {
       console.log('User not authenticated');
-      return null;
+      throw new Error('User not authenticated');
     }
 
     const member = await ctx.db
@@ -30,7 +77,7 @@ export const newJoinCode = mutation({
 
     if (!member || member.role !== 'admin') {
       console.log('User not authorized');
-      return null;
+      throw new Error('User not authorized');
     }
 
     const joinCode = generateCode();
@@ -108,14 +155,41 @@ export const get = query({
   },
 });
 
+export const getInfoById = query({
+  args: {
+    id: v.id('workspaces'),
+  },
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      return null;
+    }
+
+    const member = await ctx.db
+      .query('members')
+      .withIndex('by_workspace_id_user_id', (q) =>
+        q.eq('workspaceId', args.id).eq('userId', userId)
+      )
+      .unique();
+
+    const workspace = await ctx.db.get(args.id);
+
+    return {
+      name: workspace?.name,
+      isMember: !!member,
+    };
+  },
+});
+
 export const getById = query({
   args: {
     id: v.id('workspaces'),
   },
   handler: async (ctx, args) => {
-    const useId = await getAuthUserId(ctx);
+    const userId = await getAuthUserId(ctx);
 
-    if (!useId) {
+    if (!userId) {
       console.log('User not authenticated');
       return null;
     }
@@ -123,7 +197,7 @@ export const getById = query({
     const member = await ctx.db
       .query('members')
       .withIndex('by_workspace_id_user_id', (q) =>
-        q.eq('workspaceId', args.id).eq('userId', useId)
+        q.eq('workspaceId', args.id).eq('userId', userId)
       )
       .unique();
 
@@ -141,9 +215,9 @@ export const update = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const useId = await getAuthUserId(ctx);
+    const userId = await getAuthUserId(ctx);
 
-    if (!useId) {
+    if (!userId) {
       console.log('User not authenticated');
       return null;
     }
@@ -151,7 +225,7 @@ export const update = mutation({
     const member = await ctx.db
       .query('members')
       .withIndex('by_workspace_id_user_id', (q) =>
-        q.eq('workspaceId', args.id).eq('userId', useId)
+        q.eq('workspaceId', args.id).eq('userId', userId)
       )
       .unique();
 
@@ -171,9 +245,9 @@ export const remove = mutation({
     id: v.id('workspaces'),
   },
   handler: async (ctx, args) => {
-    const useId = await getAuthUserId(ctx);
+    const userId = await getAuthUserId(ctx);
 
-    if (!useId) {
+    if (!userId) {
       console.log('User not authenticated');
       return null;
     }
@@ -181,7 +255,7 @@ export const remove = mutation({
     const member = await ctx.db
       .query('members')
       .withIndex('by_workspace_id_user_id', (q) =>
-        q.eq('workspaceId', args.id).eq('userId', useId)
+        q.eq('workspaceId', args.id).eq('userId', userId)
       )
       .unique();
 
