@@ -1,13 +1,7 @@
 import Image from 'next/image';
 import { Delta, Op } from 'quill/core';
 import Quill, { type QuillOptions } from 'quill';
-import {
-  MutableRefObject,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { MutableRefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { MdSend } from 'react-icons/md';
 import { PiTextAa } from 'react-icons/pi';
 import { ImageIcon, Smile, XIcon } from 'lucide-react';
@@ -87,8 +81,19 @@ const Editor = ({
             enter: {
               key: 'Enter',
               handler: () => {
-                // TODO: Add logic to submit the form.
-                return;
+                const text = quill.getText();
+                const addedImage = imageElementRef.current?.files?.[0] || null;
+
+                const isEmpty =
+                  !addedImage && text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+
+                if (isEmpty) {
+                  return;
+                }
+
+                const body = JSON.stringify(quill.getContents());
+
+                submitRef.current?.({ image: addedImage, body });
               },
             },
             shift_enter: {
@@ -144,13 +149,14 @@ const Editor = ({
     }
   };
 
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onEmojiSelect = (emoji: any) => {
     const quill = quillRef.current;
 
     quill?.insertText(quill.getSelection()?.index || 0, emoji.native);
   };
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+  const isEmpty = !image && text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
 
   return (
     <div className="flex flex-col">
@@ -163,7 +169,12 @@ const Editor = ({
         }}
         className="hidden"
       />
-      <div className="flex flex-col border border-slate-200 rounded-md overflow-hidden bg-white">
+      <div
+        className={cn(
+          'flex flex-col border border-slate-200 rounded-md overflow-hidden bg-white',
+          disabled && 'opacity-50'
+        )}
+      >
         <div ref={containerRef} className="h-full ql-custom" />
         {!!image && (
           <div className="p-2">
@@ -189,9 +200,7 @@ const Editor = ({
           </div>
         )}
         <div className="flex px-2 pb-2 z-[5]">
-          <Hint
-            label={isToolbarVisible ? 'Hide formatting' : 'Show formatting'}
-          >
+          <Hint label={isToolbarVisible ? 'Hide formatting' : 'Show formatting'}>
             <Button
               disabled={disabled}
               size="iconSm"
@@ -220,17 +229,17 @@ const Editor = ({
           )}
           {variant === 'update' && (
             <div className="ml-auto flex items-center gap-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {}}
-                disabled={disabled}
-              >
+              <Button variant="outline" size="sm" onClick={onCancel} disabled={disabled}>
                 Cancel
               </Button>
               <Button
                 size="sm"
-                onClick={() => {}}
+                onClick={() => {
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image,
+                  });
+                }}
                 disabled={disabled || isEmpty}
                 className="bg-[#007a5a] hover:bg-[#007a5a]/80 text-white"
               >
@@ -241,7 +250,12 @@ const Editor = ({
           {variant === 'create' && (
             <Button
               disabled={disabled || isEmpty}
-              onClick={() => {}}
+              onClick={() => {
+                onSubmit({
+                  body: JSON.stringify(quillRef.current?.getContents()),
+                  image,
+                });
+              }}
               size="iconSm"
               className={cn(
                 'ml-auto',
