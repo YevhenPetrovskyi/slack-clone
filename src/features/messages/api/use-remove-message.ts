@@ -6,7 +6,6 @@ import { api } from '../../../../convex/_generated/api';
 import { Id } from '../../../../convex/_generated/dataModel';
 
 type RequestType = {
-  body: string;
   id: Id<'messages'>;
 };
 
@@ -19,7 +18,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useUpdateMessage = () => {
+export const useRemoveMessage = () => {
   const [data, setData] = useState<ResponseType>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -32,7 +31,7 @@ export const useUpdateMessage = () => {
   const isError = useMemo(() => status === 'error', [status]);
   const isSettled = useMemo(() => status === 'settled', [status]);
 
-  const mutation = useMutation(api.messages.update);
+  const mutation = useMutation(api.messages.remove);
 
   const mutate = useCallback(
     async (values: RequestType, options?: Options) => {
