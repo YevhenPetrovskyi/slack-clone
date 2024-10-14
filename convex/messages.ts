@@ -67,6 +67,40 @@ const getMember = async (
     .unique();
 };
 
+export const update = mutation({
+  args: {
+    body: v.string(),
+    id: v.id('messages'),
+  },
+
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+
+    if (!userId) {
+      throw new Error('Authenticated.');
+    }
+
+    const message = await ctx.db.get(args.id);
+
+    if (!message) {
+      throw new Error('Message not found.');
+    }
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+
+    if (!member || member._id !== message.memberId) {
+      throw new Error('Unauthorized.');
+    }
+
+    await ctx.db.patch(args.id, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+
+    return args.id;
+  },
+});
+
 export const get = query({
   args: {
     channelId: v.optional(v.id('channels')),
@@ -79,7 +113,6 @@ export const get = query({
     const userId = await getAuthUserId(ctx);
 
     if (!userId) {
-      console.log('User not authenticated.');
       throw new Error('Authenticated.');
     }
 
