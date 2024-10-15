@@ -4,11 +4,7 @@ import { Id } from './_generated/dataModel';
 import { mutation, QueryCtx } from './_generated/server';
 import { getAuthUserId } from '@convex-dev/auth/server';
 
-const getMember = async (
-  ctx: QueryCtx,
-  workspaceId: Id<'workspaces'>,
-  userId: Id<'users'>
-) => {
+const getMember = (ctx: QueryCtx, workspaceId: Id<'workspaces'>, userId: Id<'users'>) => {
   return ctx.db
     .query('members')
     .withIndex('by_workspace_id_user_id', (q) =>
