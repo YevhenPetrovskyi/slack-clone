@@ -130,9 +130,7 @@ export const MessageList = ({
                 threshold: 1.0,
               }
             );
-
             observer.observe(el);
-
             return () => {
               observer.disconnect();
             };
