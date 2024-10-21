@@ -6,23 +6,21 @@ import { useGetChannel } from '@/features/channels/api/use-get-channel';
 import { useGetMessages } from '@/features/messages/api/use-get-messages';
 
 import { useChannelId } from '@/hooks/use-channel-id';
+import { MessageList } from '@/components/message-list';
 
 import { Header } from './_components/header';
 import { ChatInput } from './_components/chat-input';
-import { MessageList } from '@/components/message-list';
 
 const ChannelIdPage = () => {
   const channelId = useChannelId();
 
   const { results, status, loadMore } = useGetMessages({ channelId });
-  const { data: channel, isLoading: channelLoading } = useGetChannel({
-    id: channelId,
-  });
+  const { data: channel, isLoading: channelLoading } = useGetChannel({ id: channelId });
 
   if (channelLoading || status === 'LoadingFirstPage') {
     return (
       <div className="h-full flex-1 flex items-center justify-center">
-        <Loader className="size-5 animate-spin text-muted-foreground" />
+        <Loader className="animate-spin size-5 text-muted-foreground" />
       </div>
     );
   }
@@ -47,7 +45,7 @@ const ChannelIdPage = () => {
         isLoadingMore={status === 'LoadingMore'}
         canLoadMore={status === 'CanLoadMore'}
       />
-      <ChatInput placeholder={`Message #${channel.name}`} />
+      <ChatInput placeholder={`Message # ${channel.name}`} />
     </div>
   );
 };

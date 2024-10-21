@@ -9,11 +9,12 @@ import {
 import { useCurrentMember } from '@/features/members/api/use-current-member';
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
-import { useGetMembers } from '@/features/members/api/use-get-member';
+import { useGetMembers } from '@/features/members/api/use-get-members';
 import { useCreateChannelModal } from '@/features/channels/store/use-create-channel-modal';
 
-import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { useMemberId } from '@/hooks/use-member-id';
 import { useChannelId } from '@/hooks/use-channel-id';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
 import { WorkspaceHeader } from './workspace-header';
 import { SidebarItem } from './sidebar-item';
@@ -21,6 +22,7 @@ import { WorkspaceSection } from './workspace-section';
 import { UserItem } from './user-item';
 
 export const WorkspaceSidebar = () => {
+  const memberId = useMemberId();
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
 
@@ -59,17 +61,10 @@ export const WorkspaceSidebar = () => {
 
   return (
     <div className="flex flex-col bg-[#5E2C5F] h-full">
-      <WorkspaceHeader
-        workspace={workspace}
-        isAdmin={member.role === 'admin'}
-      />
+      <WorkspaceHeader workspace={workspace} isAdmin={member.role === 'admin'} />
       <div className="flex flex-col px-2 mt-3">
         <SidebarItem label="Threads" icon={SendHorizontal} id="drafts" />
-        <SidebarItem
-          label="Drafts & Sent"
-          icon={MessageSquareText}
-          id="threads"
-        />
+        <SidebarItem label="Drafts & Sent" icon={MessageSquareText} id="threads" />
       </div>
       <WorkspaceSection
         label="Channels"
@@ -97,6 +92,7 @@ export const WorkspaceSidebar = () => {
             id={item._id}
             label={item.user.name}
             image={item.user.image}
+            variant={item._id === memberId ? 'active' : 'default'}
           />
         ))}
       </WorkspaceSection>
