@@ -136,6 +136,16 @@ export const update = mutation({
       throw new Error('User not authorized');
     }
 
+    const workspace = await ctx.db.get(member.workspaceId);
+
+    if (!workspace) {
+      throw new Error('Workspace not found');
+    }
+
+    if (workspace.userId === member.userId) {
+      throw new Error('Cannot change owner role');
+    }
+
     await ctx.db.patch(args.id, {
       role: args.role,
     });
@@ -178,6 +188,16 @@ export const remove = mutation({
 
     if (currentMember._id === args.id && currentMember.role === 'admin') {
       throw new Error('Cannot remove self if they are admin');
+    }
+
+    const workspace = await ctx.db.get(member.workspaceId);
+
+    if (!workspace) {
+      throw new Error('Workspace not found');
+    }
+
+    if (workspace.userId === member.userId) {
+      throw new Error('Cannot remove owner');
     }
 
     const [messages, reactions, conversations] = await Promise.all([
