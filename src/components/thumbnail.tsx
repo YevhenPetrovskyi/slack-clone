@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import { XIcon } from 'lucide-react';
 
 import {
   Dialog,
@@ -7,24 +6,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from './ui/dialog';
+} from "@/components/ui/dialog";
+import { XIcon } from "lucide-react";
 
 interface ThumbnailProps {
   url: string | null | undefined;
-}
+};
 
 export const Thumbnail = ({ url }: ThumbnailProps) => {
-  if (!url) {
-    return null;
-  }
+  if (!url) return null;
 
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="relative overflow-hidden max-w-[320px] border rounded-lg my-2 cursor-zoom-in">
+        <div className="relative overflow-hidden max-w-[360px] border rounded-lg my-2 cursor-zoom-in">
           <img
             src={url}
-            alt="Message image"
+            alt="Mesage image"
             className="rounded-md object-cover size-full"
           />
         </div>
@@ -32,10 +30,11 @@ export const Thumbnail = ({ url }: ThumbnailProps) => {
       <DialogContent className="max-w-[800px] border-none bg-transparent p-0 shadow-none">
         <img
           src={url}
-          alt="Message image"
+          alt="Mesage image"
           className="rounded-md object-cover size-full"
         />
       </DialogContent>
     </Dialog>
   );
 };
+

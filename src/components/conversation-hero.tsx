@@ -1,24 +1,26 @@
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ConversationHeroProps {
   name?: string;
   image?: string;
-}
+};
 
-export const ConversationHero = ({ name = 'Member', image }: ConversationHeroProps) => {
-  const avatarFullback = name.charAt(0).toUpperCase();
+export const ConversationHero = ({ name = "Member", image }: ConversationHeroProps) => {
+  const avatarFallback = name.charAt(0).toUpperCase();
 
   return (
     <div className="mt-[88px] mx-5 mb-4">
-      <div className="flex items-center gap-x-1 mb-1">
-        <Avatar>
+      <div className="flex items-center gap-x-1 mb-2">
+        <Avatar className="size-14 mr-2">
           <AvatarImage src={image} />
-          <AvatarFallback className="text-lg">{avatarFullback}</AvatarFallback>
+          <AvatarFallback>{avatarFallback}</AvatarFallback>
         </Avatar>
-        <p className="text-2xl font-bold"># {name}</p>
+        <p className="text-2xl font-bold">
+          {name}
+        </p>
       </div>
       <p className="font-normal text-slate-800 mb-4">
-        This conversation is juts between you and <strong>{name}</strong>
+        This conversation is just between you and <strong>{name}</strong>
       </p>
     </div>
   );

@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Loader } from 'lucide-react';
-import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
+import { useState } from "react";
+import { Loader } from "lucide-react";
+import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 
-import { useCurrentMember } from '@/features/members/api/use-current-member';
-import { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
+import { useCurrentMember } from "@/features/members/api/use-current-member";
+import { GetMessagesReturnType } from "@/features/messages/api/use-get-messages";
 
-import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
-import { Message } from './message';
-import { ChannelHero } from './channel-hero';
-import { ConversationHero } from './conversation-hero';
+import { Message } from "./message";
+import { ChannelHero } from "./channel-hero";
+import { ConversationHero } from "./conversation-hero";
 
-import { Id } from '../../convex/_generated/dataModel';
+import { Id } from "../../convex/_generated/dataModel";
 
 const TIME_THRESHOLD = 5;
 
@@ -20,25 +20,18 @@ interface MessageListProps {
   memberImage?: string;
   channelName?: string;
   channelCreationTime?: number;
-  variant?: 'channel' | 'thread' | 'conversation';
+  variant?: "channel" | "thread" | "conversation";
   data: GetMessagesReturnType | undefined;
   loadMore: () => void;
   isLoadingMore: boolean;
   canLoadMore: boolean;
-}
+};
 
 const formatDateLabel = (dateStr: string) => {
   const date = new Date(dateStr);
-
-  if (isToday(date)) {
-    return 'Today';
-  }
-
-  if (isYesterday(date)) {
-    return 'Yesterday';
-  }
-
-  return format(date, 'EEEE, MMMM d');
+  if (isToday(date)) return "Today";
+  if (isYesterday(date)) return "Yesterday";
+  return format(date, "EEEE, MMMM d");
 };
 
 export const MessageList = ({
@@ -47,12 +40,12 @@ export const MessageList = ({
   channelName,
   channelCreationTime,
   data,
-  variant = 'channel',
+  variant = "channel",
   loadMore,
   isLoadingMore,
   canLoadMore,
 }: MessageListProps) => {
-  const [editingId, setEditingId] = useState<Id<'messages'> | null>(null);
+  const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
 
   const workspaceId = useWorkspaceId();
   const { data: currentMember } = useCurrentMember({ workspaceId });
@@ -60,14 +53,11 @@ export const MessageList = ({
   const groupedMessages = data?.reduce(
     (groups, message) => {
       const date = new Date(message._creationTime);
-      const dateKey = format(date, 'yyyy-MM-dd');
-
+      const dateKey = format(date, "yyyy-MM-dd");
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
-
       groups[dateKey].unshift(message);
-
       return groups;
     },
     {} as Record<string, typeof data>
@@ -75,12 +65,12 @@ export const MessageList = ({
 
   return (
     <div className="flex-1 flex flex-col-reverse pb-4 overflow-y-auto messages-scrollbar">
-      {Object.entries(groupedMessages || {}).map(([date, messages]) => (
-        <div key={date}>
+      {Object.entries(groupedMessages || {}).map(([dateKey, messages]) => (
+        <div key={dateKey}>
           <div className="text-center my-2 relative">
             <hr className="absolute top-1/2 left-0 right-0 border-t border-gray-300" />
             <span className="relative inline-block bg-white px-4 py-1 rounded-full text-xs border border-gray-300 shadow-sm">
-              {formatDateLabel(date)}
+              {formatDateLabel(dateKey)}
             </span>
           </div>
           {messages.map((message, index) => {
@@ -109,13 +99,13 @@ export const MessageList = ({
                 isEditing={editingId === message._id}
                 setEditingId={setEditingId}
                 isCompact={isCompact}
-                hideThreadButton={variant === 'thread'}
+                hideThreadButton={variant === "thread"}
                 threadCount={message.threadCount}
                 threadImage={message.threadImage}
                 threadName={message.threadName}
                 threadTimestamp={message.threadTimestamp}
               />
-            );
+            )
           })}
         </div>
       ))}
@@ -124,19 +114,16 @@ export const MessageList = ({
         ref={(el) => {
           if (el) {
             const observer = new IntersectionObserver(
-              ([entries]) => {
-                if (entries.isIntersecting && canLoadMore) {
+              ([entry]) => {
+                if (entry.isIntersecting && canLoadMore) {
                   loadMore();
                 }
               },
-              {
-                threshold: 1.0,
-              }
+              { threshold: 1.0 }
             );
+
             observer.observe(el);
-            return () => {
-              observer.disconnect();
-            };
+            return () => observer.disconnect();
           }
         }}
       />
@@ -148,11 +135,17 @@ export const MessageList = ({
           </span>
         </div>
       )}
-      {variant === 'channel' && channelName && channelCreationTime && (
-        <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      {variant === "channel" && channelName && channelCreationTime && (
+        <ChannelHero
+          name={channelName}
+          creationTime={channelCreationTime}
+        />
       )}
-      {variant === 'conversation' && (
-        <ConversationHero name={memberName} image={memberImage} />
+      {variant === "conversation" && (
+        <ConversationHero
+          name={memberName}
+          image={memberImage}
+        />
       )}
     </div>
   );

@@ -1,5 +1,5 @@
-import { useParentMessageId } from '@/features/messages/store/use-parent-message-id';
-import { useProfileMemberId } from '@/features/members/store/use-profile-member-id';
+import { useParentMessageId } from "@/features/messages/store/use-parent-message-id";
+import { useProfileMemberId } from "@/features/members/store/use-profile-member-id";
 
 export const usePanel = () => {
   const [parentMessageId, setParentMessageId] = useParentMessageId();
@@ -7,13 +7,11 @@ export const usePanel = () => {
 
   const onOpenProfile = (memberId: string) => {
     setProfileMemberId(memberId);
-
     setParentMessageId(null);
   };
 
   const onOpenMessage = (messageId: string) => {
     setParentMessageId(messageId);
-
     setProfileMemberId(null);
   };
 

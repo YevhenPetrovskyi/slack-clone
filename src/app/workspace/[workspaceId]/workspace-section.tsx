@@ -1,18 +1,17 @@
-import { useToggle } from 'react-use';
-import { PlusIcon } from 'lucide-react';
-import { FaCaretDown } from 'react-icons/fa';
+import { useToggle } from "react-use";
+import { PlusIcon } from "lucide-react";
+import { FaCaretDown } from "react-icons/fa";
 
-import { cn } from '@/lib/utils';
-
-import { Hint } from '@/components/hint';
-import { Button } from '@/components/ui/button';
+import { cn } from "@/lib/utils";
+import { Hint } from "@/components/hint";
+import { Button } from "@/components/ui/button";
 
 interface WorkspaceSectionProps {
   children: React.ReactNode;
   label: string;
   hint: string;
   onNew?: () => void;
-}
+};
 
 export const WorkspaceSection = ({
   children,
@@ -30,12 +29,10 @@ export const WorkspaceSection = ({
           className="p-0.5 text-sm text-[#f9edffcc] shrink-0 size-6"
           onClick={toggle}
         >
-          <FaCaretDown
-            className={cn(
-              'size-4 -rotate-90 transition-transform',
-              on && 'rotate-0'
-            )}
-          />
+          <FaCaretDown className={cn(
+            "size-4 transition-transform",
+            on && "-rotate-90"
+          )} />
         </Button>
         <Button
           variant="transparent"
@@ -44,7 +41,6 @@ export const WorkspaceSection = ({
         >
           <span className="truncate">{label}</span>
         </Button>
-
         {onNew && (
           <Hint label={hint} side="top" align="center">
             <Button

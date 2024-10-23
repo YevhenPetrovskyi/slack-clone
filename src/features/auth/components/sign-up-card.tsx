@@ -1,69 +1,68 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
+import { TriangleAlert } from "lucide-react";
+import { useAuthActions } from "@convex-dev/auth/react";
 
-import { useAuthActions } from '@convex-dev/auth/react';
-import { useRouter } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
-import { TriangleAlert } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
-import { FaGithub } from 'react-icons/fa';
-
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/separator';
-
-import { SignInFlow } from '../types';
+import { SignInFlow } from "../types";
 
 interface SignUpCardProps {
   setState: (state: SignInFlow) => void;
-}
+};
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
   const { signIn } = useAuthActions();
-  const router = useRouter();
 
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [confirmPassword, setConfirmPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
-  const [pending, setPending] = useState<boolean>(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
+  const [pending, setPending] = useState(false);
 
   const onPasswordSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
     setPending(true);
-
-    signIn('password', { name, email, password, flow: 'signUp' })
-      .then(() => {
-        router.replace('/');
-      })
+    signIn("password", { name, email, password, flow: "signUp" })
       .catch(() => {
-        setError('Something went wrong');
+        setError("Something went wrong");
       })
-      .finally(() => setPending(false));
+      .finally(() => {
+        setPending(false);
+      })
   };
 
-  const onProviderSignUp = (value: 'google' | 'github') => {
+  const onProviderSignUp = (value: "github" | "google") => {
     setPending(true);
-    signIn(value).finally(() => setPending(false));
+    signIn(value)
+      .finally(() => {
+        setPending(false);
+      })
   };
 
   return (
     <Card className="w-full h-full p-8">
       <CardHeader className="px-0 pt-0">
-        <CardTitle>Sign up to continue</CardTitle>
+        <CardTitle>
+          Sign up to continue
+        </CardTitle>
         <CardDescription>
           Use your email or another service to continue
         </CardDescription>
@@ -83,7 +82,6 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             placeholder="Full name"
             required
           />
-
           <Input
             disabled={pending}
             value={email}
@@ -92,7 +90,6 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             type="email"
             required
           />
-
           <Input
             disabled={pending}
             value={password}
@@ -101,7 +98,6 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             type="password"
             required
           />
-
           <Input
             disabled={pending}
             value={confirmPassword}
@@ -110,7 +106,6 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
             type="password"
             required
           />
-
           <Button type="submit" className="w-full" size="lg" disabled={pending}>
             Continue
           </Button>
@@ -119,33 +114,27 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         <div className="flex flex-col gap-y-2.5">
           <Button
             disabled={pending}
-            onClick={() => onProviderSignUp('google')}
+            onClick={() => onProviderSignUp("google")}
             variant="outline"
             size="lg"
             className="w-full relative"
           >
-            <FcGoogle className="size-5 absolute left-2.5 top-3" />
+            <FcGoogle className="size-5 absolute top-3 left-2.5" />
             Continue with Google
           </Button>
           <Button
             disabled={pending}
-            onClick={() => onProviderSignUp('github')}
+            onClick={() => onProviderSignUp("github")}
             variant="outline"
             size="lg"
             className="w-full relative"
           >
-            <FaGithub className="size-5 absolute left-2.5 top-3" />
-            Continue with GitHub
+            <FaGithub className="size-5 absolute top-3 left-2.5" />
+            Continue with Github
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Already have an account?{' '}
-          <span
-            onClick={() => setState('signIn')}
-            className="text-sky-700 hover:underline cursor-pointer"
-          >
-            Sign in
-          </span>
+          Already have an account? <span onClick={() => setState("signIn")} className="text-sky-700 hover:underline cursor-pointer">Sign in</span>
         </p>
       </CardContent>
     </Card>

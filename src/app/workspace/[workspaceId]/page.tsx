@@ -1,58 +1,46 @@
-'use client';
+"use client";
 
-import { useMemo, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { Loader, TriangleAlert } from 'lucide-react';
+import { useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Loader, TriangleAlert } from "lucide-react";
 
-import { useCurrentMember } from '@/features/members/api/use-current-member';
-import { useCreateWorkspaceModal } from '@/features/workspaces/store/use-create-workspace-modal';
-import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
-import { useGetChannels } from '@/features/channels/api/use-get-channels';
+import { useGetChannels } from "@/features/channels/api/use-get-channels";
+import { useCurrentMember } from "@/features/members/api/use-current-member";
+import { useGetWorkspace } from "@/features/workspaces/api/use-get-workspace";
+import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
 
-import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
-const WorkspacePage = () => {
+const WorkspaceIdPage = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
-  const [open, setOpen] = useCreateWorkspaceModal();
+  const [open, setOpen] = useCreateChannelModal();
 
-  const { data: member, isLoading: memberLoading } = useCurrentMember({
-    workspaceId,
-  });
-  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({
-    id: workspaceId,
-  });
-  const { data: channels, isLoading: channelsLoading } = useGetChannels({
+  const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
+  const { data: workspace, isLoading: workspaceLoading } = useGetWorkspace({ id: workspaceId });
+  const { data: channels, isLoading: channelsLoading } = useGetChannels({ 
     workspaceId,
   });
 
   const channelId = useMemo(() => channels?.[0]?._id, [channels]);
-  const isAdmin = useMemo(() => member?.role === 'admin', [member]);
+  const isAdmin = useMemo(() => member?.role === "admin", [member?.role]);
 
   useEffect(() => {
-    if (
-      workspaceLoading ||
-      channelsLoading ||
-      !workspace ||
-      !member ||
-      memberLoading
-    ) {
-      return;
-    }
+    if (workspaceLoading || channelsLoading || memberLoading || !member || !workspace) return;
 
     if (channelId) {
-      router.replace(`/workspace/${workspaceId}/channel/${channelId}`);
-    } else if (!open && !isAdmin) {
+      router.push(`/workspace/${workspaceId}/channel/${channelId}`);
+    } else if (!open && isAdmin) {
       setOpen(true);
     }
   }, [
     member,
     memberLoading,
     isAdmin,
+    channelId,
     workspaceLoading,
     channelsLoading,
     workspace,
-    channelId,
     open,
     setOpen,
     router,
@@ -81,9 +69,11 @@ const WorkspacePage = () => {
   return (
     <div className="h-full flex-1 flex items-center justify-center flex-col gap-2">
       <TriangleAlert className="size-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">No channel found</span>
+      <span className="text-sm text-muted-foreground">
+        No channel found
+      </span>
     </div>
   );
 };
 
-export default WorkspacePage;
+export default WorkspaceIdPage;

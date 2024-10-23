@@ -1,5 +1,5 @@
 {
-  "name": "slack-clone",
+  "name": "slack-tutorial",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,31 +9,33 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@auth/core": "^0.35.0",
-    "@convex-dev/auth": "^0.0.70",
+    "@auth/core": "^0.34.2",
+    "@convex-dev/auth": "^0.0.52",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@radix-ui/react-popover": "^1.1.2",
+    "@radix-ui/react-popover": "^1.1.1",
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "convex": "^1.16.2",
-    "date-fns": "^4.1.0",
-    "jotai": "^2.10.0",
-    "lucide-react": "^0.445.0",
-    "next": "14.2.13",
+    "cmdk": "1.0.0",
+    "convex": "^1.14.1",
+    "date-fns": "^3.6.0",
+    "emoji-picker-react": "^4.11.1",
+    "jotai": "^2.9.3",
+    "lucide-react": "^0.427.0",
+    "next": "14.2.5",
     "next-themes": "^0.3.0",
-    "nuqs": "^1.20.0",
+    "nuqs": "^1.17.8",
     "quill": "^2.0.2",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.3.0",
-    "react-resizable-panels": "^2.1.3",
+    "react-resizable-panels": "^2.1.0",
     "react-use": "^17.5.1",
     "react-verification-input": "^4.1.2",
     "sonner": "^1.5.0",
@@ -48,6 +50,6 @@
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.13"
+    "eslint-config-next": "14.2.5"
   }
 }

@@ -1,35 +1,34 @@
-import { useState } from 'react';
-import Picker from '@emoji-mart/react';
-import data from '@emoji-mart/data';
+import { useState } from "react";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from "@/components/ui/popover";
 import {
   Tooltip,
   TooltipContent,
-  TooltipTrigger,
   TooltipProvider,
-} from '@/components/ui/tooltip';
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface EmojiPopoverProps {
   children: React.ReactNode;
   hint?: string;
-  onEmojiSelect: (emoji: any) => void;
-}
+  onEmojiSelect: (value: string) => void;
+};
 
 export const EmojiPopover = ({
   children,
-  hint = 'Emoji',
+  hint = "Emoji",
   onEmojiSelect,
 }: EmojiPopoverProps) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
-  const onSelect = (emoji: any) => {
-    onEmojiSelect(emoji);
+  const onSelect = (value: EmojiClickData) => {
+    onEmojiSelect(value.emoji);
     setPopoverOpen(false);
 
     setTimeout(() => {
@@ -46,14 +45,16 @@ export const EmojiPopover = ({
           delayDuration={50}
         >
           <PopoverTrigger asChild>
-            <TooltipTrigger asChild>{children}</TooltipTrigger>
+            <TooltipTrigger asChild>
+              {children}
+            </TooltipTrigger>
           </PopoverTrigger>
-          <TooltipContent className="bg-black text-white border-white/5">
+          <TooltipContent className="bg-black text-white border border-white/5">
             <p className="font-medium text-xs">{hint}</p>
           </TooltipContent>
         </Tooltip>
         <PopoverContent className="p-0 w-full border-none shadow-none">
-          <Picker data={data} onEmojiSelect={onSelect} />
+          <EmojiPicker onEmojiClick={onSelect} />
         </PopoverContent>
       </Popover>
     </TooltipProvider>
