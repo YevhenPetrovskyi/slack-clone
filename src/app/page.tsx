@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { Loader } from "lucide-react";
-import { useEffect, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { Loader } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { useGetWorkspaces } from "@/features/workspaces/api/use-get-workspaces";
-import { useCreateWorkspaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
+import { useGetWorkspaces } from '@/features/workspaces/api/use-get-workspaces';
+import { useCreateWorkspaceModal } from '@/features/workspaces/store/use-create-workspace-modal';
 
 export default function Home() {
   const router = useRouter();
@@ -30,5 +30,4 @@ export default function Home() {
       <Loader className="size-6 animate-spin text-muted-foreground" />
     </div>
   );
-};
-
+}

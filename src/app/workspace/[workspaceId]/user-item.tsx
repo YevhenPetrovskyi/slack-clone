@@ -1,41 +1,36 @@
-import Link from "next/link";
-import { cva, type VariantProps } from "class-variance-authority";
+import Link from 'next/link';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button"
-import { useWorkspaceId } from "@/hooks/use-workspace-id";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from '../../../../convex/_generated/dataModel';
 
 const userItemVariants = cva(
-  "flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden",
+  'flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden',
   {
     variants: {
       variant: {
-        default: "text-[#f9edffcc]",
-        active: "text-[#481349] bg-white/90 hover:bg-white/90",
+        default: 'text-[#f9edffcc]',
+        active: 'text-[#481349] bg-white/90 hover:bg-white/90',
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: 'default',
     },
-  },
+  }
 );
 
 interface UserItemProps {
-  id: Id<"members">;
+  id: Id<'members'>;
   label?: string;
   image?: string;
-  variant?: VariantProps<typeof userItemVariants>["variant"];
-};
+  variant?: VariantProps<typeof userItemVariants>['variant'];
+}
 
-export const UserItem = ({ 
-  id,
-  label = "Member",
-  image,
-  variant,
-}: UserItemProps) => {
+export const UserItem = ({ id, label = 'Member', image, variant }: UserItemProps) => {
   const workspaceId = useWorkspaceId();
   const avatarFallback = label.charAt(0).toUpperCase();
 

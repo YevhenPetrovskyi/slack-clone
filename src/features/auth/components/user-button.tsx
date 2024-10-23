@@ -1,28 +1,24 @@
-"use client";
+'use client';
 
-import { Loader, LogOut } from "lucide-react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { Loader, LogOut } from 'lucide-react';
+import { useAuthActions } from '@convex-dev/auth/react';
 
-import { 
-  Avatar, 
-  AvatarFallback, 
-  AvatarImage
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 
-import { useCurrentUser } from "../api/use-current-user";
+import { useCurrentUser } from '../api/use-current-user';
 
 export const UserButton = () => {
   const { signOut } = useAuthActions();
   const { data, isLoading } = useCurrentUser();
 
   if (isLoading) {
-    return <Loader className="size-4 animate-spin text-muted-foreground" />
+    return <Loader className="size-4 animate-spin text-muted-foreground" />;
   }
 
   if (!data) {

@@ -1,18 +1,18 @@
-import { toast } from "sonner";
-import { useState } from "react";
-import { TrashIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { FaChevronDown } from "react-icons/fa";
+import { toast } from 'sonner';
+import { useState } from 'react';
+import { TrashIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { FaChevronDown } from 'react-icons/fa';
 
-import { useUpdateChannel } from "@/features/channels/api/use-update-channel";
-import { useRemoveChannel } from "@/features/channels/api/use-remove-channel";
-import { useCurrentMember } from "@/features/members/api/use-current-member";
+import { useUpdateChannel } from '@/features/channels/api/use-update-channel';
+import { useRemoveChannel } from '@/features/channels/api/use-remove-channel';
+import { useCurrentMember } from '@/features/members/api/use-current-member';
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useConfirm } from "@/hooks/use-confirm";
-import { useChannelId } from "@/hooks/use-channel-id";
-import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useConfirm } from '@/hooks/use-confirm';
+import { useChannelId } from '@/hooks/use-channel-id';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import {
   Dialog,
   DialogContent,
@@ -21,19 +21,19 @@ import {
   DialogTitle,
   DialogClose,
   DialogFooter,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 
 interface HeaderProps {
   title: string;
-};
+}
 
 export const Header = ({ title }: HeaderProps) => {
   const router = useRouter();
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const [ConfirmDialog, confirm] = useConfirm(
-    "Delete this channel?",
-    "You are about to delete this channel. This action is irreversible",
+    'Delete this channel?',
+    'You are about to delete this channel. This action is irreversible'
   );
 
   const [value, setValue] = useState(title);
@@ -44,13 +44,13 @@ export const Header = ({ title }: HeaderProps) => {
   const { mutate: removeChannel, isPending: isRemovingChannel } = useRemoveChannel();
 
   const handleEditOpen = (value: boolean) => {
-    if (member?.role !== "admin") return;
+    if (member?.role !== 'admin') return;
 
     setEditOpen(value);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\s+/g, "-").toLowerCase();
+    const value = e.target.value.replace(/\s+/g, '-').toLowerCase();
     setValue(value);
   };
 
@@ -59,29 +59,35 @@ export const Header = ({ title }: HeaderProps) => {
 
     if (!ok) return;
 
-    removeChannel({ id: channelId }, {
-      onSuccess: () => {
-        toast.success("Channel deleted");
-        router.push(`/workspace/${workspaceId}`);
-      },
-      onError: () => {
-        toast.error("Failed to delete channel");
+    removeChannel(
+      { id: channelId },
+      {
+        onSuccess: () => {
+          toast.success('Channel deleted');
+          router.push(`/workspace/${workspaceId}`);
+        },
+        onError: () => {
+          toast.error('Failed to delete channel');
+        },
       }
-    });
+    );
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    updateChannel({ id: channelId, name: value }, {
-      onSuccess: () => {
-        toast.success("Channel updated");
-        setEditOpen(false);
-      },
-      onError: () => {
-        toast.error("Failed to update channel");
+    updateChannel(
+      { id: channelId, name: value },
+      {
+        onSuccess: () => {
+          toast.success('Channel updated');
+          setEditOpen(false);
+        },
+        onError: () => {
+          toast.error('Failed to update channel');
+        },
       }
-    });
+    );
   };
 
   return (
@@ -100,9 +106,7 @@ export const Header = ({ title }: HeaderProps) => {
         </DialogTrigger>
         <DialogContent className="p-0 bg-gray-50 overflow-hidden">
           <DialogHeader className="p-4 border-b bg-white">
-            <DialogTitle>
-              # {title}
-            </DialogTitle>
+            <DialogTitle># {title}</DialogTitle>
           </DialogHeader>
           <div className="px-4 pb-4 flex flex-col gap-y-2">
             <Dialog open={editOpen} onOpenChange={handleEditOpen}>
@@ -110,7 +114,7 @@ export const Header = ({ title }: HeaderProps) => {
                 <div className="px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold">Channel name</p>
-                    {member?.role === "admin" && (
+                    {member?.role === 'admin' && (
                       <p className="text-sm text-[#1264a3] hover:underline font-semibold">
                         Edit
                       </p>
@@ -140,14 +144,12 @@ export const Header = ({ title }: HeaderProps) => {
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button disabled={isUpdatingChannel}>
-                      Save
-                    </Button>
+                    <Button disabled={isUpdatingChannel}>Save</Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
-            {member?.role === "admin" && (
+            {member?.role === 'admin' && (
               <button
                 onClick={handleDelete}
                 disabled={isRemovingChannel}

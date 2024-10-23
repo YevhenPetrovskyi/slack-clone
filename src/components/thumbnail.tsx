@@ -6,12 +6,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { XIcon } from "lucide-react";
+} from '@/components/ui/dialog';
+import { XIcon } from 'lucide-react';
 
 interface ThumbnailProps {
   url: string | null | undefined;
-};
+}
 
 export const Thumbnail = ({ url }: ThumbnailProps) => {
   if (!url) return null;
@@ -28,13 +28,8 @@ export const Thumbnail = ({ url }: ThumbnailProps) => {
         </div>
       </DialogTrigger>
       <DialogContent className="max-w-[800px] border-none bg-transparent p-0 shadow-none">
-        <img
-          src={url}
-          alt="Mesage image"
-          className="rounded-md object-cover size-full"
-        />
+        <img src={url} alt="Mesage image" className="rounded-md object-cover size-full" />
       </DialogContent>
     </Dialog>
   );
 };
-

@@ -1,8 +1,8 @@
-import { MessageSquareTextIcon, Pencil, Smile, Trash } from "lucide-react";
+import { MessageSquareTextIcon, Pencil, Smile, Trash } from 'lucide-react';
 
-import { Hint } from "./hint";
-import { Button } from "./ui/button";
-import { EmojiPopover } from "./emoji-popover";
+import { Hint } from './hint';
+import { Button } from './ui/button';
+import { EmojiPopover } from './emoji-popover';
 
 interface ToolbarProps {
   isAuthor: boolean;
@@ -12,7 +12,7 @@ interface ToolbarProps {
   handleDelete: () => void;
   handleReaction: (value: string) => void;
   hideThreadButton?: boolean;
-};
+}
 
 export const Toolbar = ({
   isAuthor,
@@ -30,11 +30,7 @@ export const Toolbar = ({
           hint="Add reaction"
           onEmojiSelect={(emoji) => handleReaction(emoji)}
         >
-          <Button
-            variant="ghost"
-            size="iconSm"
-            disabled={isPending}
-          >
+          <Button variant="ghost" size="iconSm" disabled={isPending}>
             <Smile className="size-4" />
           </Button>
         </EmojiPopover>
@@ -76,5 +72,5 @@ export const Toolbar = ({
         )}
       </div>
     </div>
-  )
+  );
 };

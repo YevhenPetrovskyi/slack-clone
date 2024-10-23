@@ -1,52 +1,52 @@
-import Quill from "quill";
-import { toast } from "sonner";
-import dynamic from "next/dynamic";
-import { useRef, useState } from "react";
-import { AlertTriangle, Loader, XIcon } from "lucide-react";
-import { differenceInMinutes, format, isToday, isYesterday } from "date-fns";
+import Quill from 'quill';
+import { toast } from 'sonner';
+import dynamic from 'next/dynamic';
+import { useRef, useState } from 'react';
+import { AlertTriangle, Loader, XIcon } from 'lucide-react';
+import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
 
-import { useGetMessage } from "@/features/messages/api/use-get-message";
-import { useGetMessages } from "@/features/messages/api/use-get-messages";
-import { useCurrentMember } from "@/features/members/api/use-current-member";
-import { useCreateMessage } from "@/features/messages/api/use-create-message";
-import { useGenerateUploadUrl } from "@/features/upload/api/use-generate-upload-url";
+import { useGetMessage } from '@/features/messages/api/use-get-message';
+import { useGetMessages } from '@/features/messages/api/use-get-messages';
+import { useCurrentMember } from '@/features/members/api/use-current-member';
+import { useCreateMessage } from '@/features/messages/api/use-create-message';
+import { useGenerateUploadUrl } from '@/features/upload/api/use-generate-upload-url';
 
-import { Button } from "@/components/ui/button";
-import { Message } from "@/components/message";
-import { useChannelId } from "@/hooks/use-channel-id";
-import { useWorkspaceId } from "@/hooks/use-workspace-id";
+import { Button } from '@/components/ui/button';
+import { Message } from '@/components/message';
+import { useChannelId } from '@/hooks/use-channel-id';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from '../../../../convex/_generated/dataModel';
 
-const Editor = dynamic(() => import("@/components/editor"), { ssr: false });
+const Editor = dynamic(() => import('@/components/editor'), { ssr: false });
 
 const TIME_THRESHOLD = 5;
 
 interface ThreadProps {
-  messageId: Id<"messages">;
+  messageId: Id<'messages'>;
   onClose: () => void;
-};
+}
 
 type CreateMesageValues = {
-  channelId: Id<"channels">;
-  workspaceId: Id<"workspaces">;
-  parentMessageId: Id<"messages">;
+  channelId: Id<'channels'>;
+  workspaceId: Id<'workspaces'>;
+  parentMessageId: Id<'messages'>;
   body: string;
-  image: Id<"_storage"> | undefined;
+  image: Id<'_storage'> | undefined;
 };
 
 const formatDateLabel = (dateStr: string) => {
   const date = new Date(dateStr);
-  if (isToday(date)) return "Today";
-  if (isYesterday(date)) return "Yesterday";
-  return format(date, "EEEE, MMMM d");
+  if (isToday(date)) return 'Today';
+  if (isYesterday(date)) return 'Yesterday';
+  return format(date, 'EEEE, MMMM d');
 };
 
 export const Thread = ({ messageId, onClose }: ThreadProps) => {
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
 
-  const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
+  const [editingId, setEditingId] = useState<Id<'messages'> | null>(null);
   const [editorKey, setEditorKey] = useState(0);
   const [isPending, setIsPending] = useState(false);
 
@@ -57,21 +57,15 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   const { data: currentMember } = useCurrentMember({ workspaceId });
   const { data: message, isLoading: loadingMessage } = useGetMessage({ id: messageId });
-  const { results, status, loadMore } = useGetMessages({ 
+  const { results, status, loadMore } = useGetMessages({
     channelId,
     parentMessageId: messageId,
   });
 
-  const canLoadMore = status === "CanLoadMore";
-  const isLoadingMore = status === "LoadingMore";
-  
-  const handleSubmit = async ({
-    body,
-    image
-  }: {
-    body: string;
-    image: File | null;
-  }) => {
+  const canLoadMore = status === 'CanLoadMore';
+  const isLoadingMore = status === 'LoadingMore';
+
+  const handleSubmit = async ({ body, image }: { body: string; image: File | null }) => {
     try {
       setIsPending(true);
       editorRef?.current?.enable(false);
@@ -88,17 +82,17 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
         const url = await generateUploadUrl({}, { throwError: true });
 
         if (!url) {
-          throw new Error("Url not found");
+          throw new Error('Url not found');
         }
 
         const result = await fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": image.type },
+          method: 'POST',
+          headers: { 'Content-Type': image.type },
           body: image,
         });
 
         if (!result.ok) {
-          throw new Error("Failed to upload image");
+          throw new Error('Failed to upload image');
         }
 
         const { storageId } = await result.json();
@@ -110,7 +104,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
       setEditorKey((prevKey) => prevKey + 1);
     } catch (error) {
-      toast.error("Failed to send message");
+      toast.error('Failed to send message');
     } finally {
       setIsPending(false);
       editorRef?.current?.enable(true);
@@ -120,7 +114,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
   const groupedMessages = results?.reduce(
     (groups, message) => {
       const date = new Date(message._creationTime);
-      const dateKey = format(date, "yyyy-MM-dd");
+      const dateKey = format(date, 'yyyy-MM-dd');
       if (!groups[dateKey]) {
         groups[dateKey] = [];
       }
@@ -130,7 +124,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
     {} as Record<string, typeof results>
   );
 
-  if (loadingMessage || status === "LoadingFirstPage") {
+  if (loadingMessage || status === 'LoadingFirstPage') {
     return (
       <div className="h-full flex flex-col">
         <div className="h-[49px] flex justify-between items-center px-4 border-b">
@@ -212,7 +206,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
                   threadName={message.threadName}
                   threadTimestamp={message.threadTimestamp}
                 />
-              )
+              );
             })}
           </div>
         ))}
